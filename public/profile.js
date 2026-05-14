@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentUser = JSON.parse(localStorage.getItem('easyride_user'));
     
     if (!currentUser) {
-        window.location.href = '/'; 
+        window.location.href = 'index.html'; 
         return;
     }
 
@@ -62,9 +62,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     window.logout = async () => {
-        try { await fetch('/api/auth/logout', { method: 'POST' }); } catch(e) {}
+        try { await fetch('/api/auth/logout', { method: 'POST' }).catch(() => {}); } catch(e) {}
         localStorage.removeItem('easyride_user');
-        window.location.href = '/';
+        window.location.href = 'index.html';
     };
 
     window.toggleDropdown = (e) => {
@@ -104,42 +104,22 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('add-card-form').reset();
     };
 
-    // Load User Data
+    // Load User Data — Demo mode: use localStorage user info
     async function fetchUserData() {
-        try {
-            const res = await fetch(`/api/user/${currentUser.id}`);
-            const data = await res.json();
-            if (res.ok) {
-                const u = data.user;
-                document.getElementById('profile-fullname').value = u.full_name || '';
-                document.getElementById('profile-email').value = u.email;
-                document.getElementById('profile-phone').value = u.phone_number || '';
-                document.getElementById('profile-address').value = u.address || '';
-                
-                profileNameDisplay.textContent = u.full_name || u.username;
-                if (u.profile_picture) {
-                    profileAvatarLarge.textContent = '';
-                    profileAvatarLarge.style.backgroundImage = `url(${u.profile_picture})`;
-                    if (userAvatar) {
-                        userAvatar.textContent = '';
-                        userAvatar.style.backgroundImage = `url(${u.profile_picture})`;
-                        userAvatar.style.backgroundSize = 'cover';
-                        userAvatar.style.backgroundPosition = 'center';
-                    }
-                } else {
-                    profileAvatarLarge.textContent = (u.full_name ? u.full_name.charAt(0) : u.username.charAt(0)).toUpperCase();
-                }
-            }
-        } catch (error) {
-            console.error('Failed to fetch user data', error);
-        }
+        const u = currentUser;
+        document.getElementById('profile-fullname').value = u.full_name || u.username || '';
+        document.getElementById('profile-email').value = u.email || '';
+        document.getElementById('profile-phone').value = u.phone_number || '';
+        document.getElementById('profile-address').value = u.address || '';
+        profileNameDisplay.textContent = u.full_name || u.username;
+        profileAvatarLarge.textContent = ((u.full_name || u.username || 'U').charAt(0)).toUpperCase();
     }
     fetchUserData();
 
-    // [PROFESSOR NOTE]: Handle Profile Update form submission using FormData for text + image upload
+    // Handle Profile Update — Demo mode: save to localStorage, show toast
     const profileForm = document.getElementById('profile-form');
     profileForm.addEventListener('submit', async (e) => {
-        e.preventDefault(); // Prevent default page reload
+        e.preventDefault();
         const btn = document.getElementById('profile-save-btn');
         const text = document.getElementById('profile-btn-text');
         const spinner = document.getElementById('profile-spinner');
@@ -147,62 +127,29 @@ document.addEventListener('DOMContentLoaded', () => {
         
         btn.disabled = true;
         text.textContent = 'Saving...';
-        spinner.classList.remove('hidden'); // Show loading spinner
+        spinner.classList.remove('hidden');
         msg.classList.add('hidden');
 
-        // [PROFESSOR NOTE]: Use FormData instead of JSON to send the file along with the text
-        const formData = new FormData();
-        formData.append('user_id', currentUser.id);
-        formData.append('full_name', document.getElementById('profile-fullname').value);
-        formData.append('email', document.getElementById('profile-email').value);
-        formData.append('phone_number', iti ? iti.getNumber() : document.getElementById('profile-phone').value); // Extract international number
-        formData.append('address', document.getElementById('profile-address').value);
-        
-        // Append image file if selected
-        if (profileAvatarInput.files[0]) {
-            formData.append('avatar', profileAvatarInput.files[0]);
-        }
-
-        try {
-            // [PROFESSOR NOTE]: Send POST request to the backend with FormData
-            const res = await fetch(`/api/update-profile`, {
-                method: 'POST',
-                body: formData
-            });
-            const data = await res.json();
+        // Simulate save delay
+        setTimeout(() => {
+            const updatedName = document.getElementById('profile-fullname').value;
+            const updatedEmail = document.getElementById('profile-email').value;
             
-            // [PROFESSOR NOTE]: Handle the server's JSON response and show appropriate toast notification
-            if (res.ok && (data.success || !data.error)) {
-                showToast(data.message || 'Changes saved!', 'success');
-                const updatedName = document.getElementById('profile-fullname').value;
-                profileNameDisplay.textContent = updatedName || currentUser.username;
-                if (data.profile_picture) {
-                    if (userAvatar) {
-                        userAvatar.textContent = '';
-                        userAvatar.style.backgroundImage = `url(${data.profile_picture})`;
-                        userAvatar.style.backgroundSize = 'cover';
-                        userAvatar.style.backgroundPosition = 'center';
-                    }
-                } else if (!profileAvatarLarge.style.backgroundImage) {
-                    profileAvatarLarge.textContent = (updatedName ? updatedName.charAt(0) : currentUser.username.charAt(0)).toUpperCase();
-                }
-                
-                // Update local storage email if changed
-                currentUser.email = document.getElementById('profile-email').value;
-                localStorage.setItem('easyride_user', JSON.stringify(currentUser));
-            } else {
-                showToast(data.error || 'Failed to update profile.', 'error');
-            }
-        } catch (err) {
-            showToast('Network error.', 'error');
-        } finally {
+            // Update localStorage
+            currentUser.full_name = updatedName;
+            currentUser.email = updatedEmail;
+            localStorage.setItem('easyride_user', JSON.stringify(currentUser));
+            
+            profileNameDisplay.textContent = updatedName || currentUser.username;
+            showToast('Changes saved!', 'success');
+            
             btn.disabled = false;
             text.textContent = 'Update Profile';
-            spinner.classList.add('hidden'); // Hide loading spinner
-        }
+            spinner.classList.add('hidden');
+        }, 1000);
     });
 
-    // Handle Password Update
+    // Handle Password Update — Demo mode: just validate and show toast
     const passwordForm = document.getElementById('password-form');
     passwordForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -211,7 +158,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const spinner = document.getElementById('password-spinner');
         const msg = document.getElementById('password-message');
         
-        const currentPassword = document.getElementById('current-password').value;
         const newPassword = document.getElementById('new-password').value;
         const confirmPassword = document.getElementById('confirm-password').value;
 
@@ -227,27 +173,14 @@ document.addEventListener('DOMContentLoaded', () => {
         spinner.classList.remove('hidden');
         msg.classList.add('hidden');
 
-        try {
-            const res = await fetch(`/api/user/${currentUser.id}/password`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ current_password: currentPassword, new_password: newPassword })
-            });
-            const data = await res.json();
-            
-            if (res.ok) {
-                showToast('Password changed successfully!', 'success');
-                passwordForm.reset();
-            } else {
-                showToast(data.error || 'Failed to update password.', 'error');
-            }
-        } catch (err) {
-            showToast('Network error.', 'error');
-        } finally {
+        // Demo mode: simulate success
+        setTimeout(() => {
+            showToast('Password changed successfully!', 'success');
+            passwordForm.reset();
             btn.disabled = false;
             text.textContent = 'Update Password';
             spinner.classList.add('hidden');
-        }
+        }, 1000);
     });
 
     function showToast(message, type = 'success') {

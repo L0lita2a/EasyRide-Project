@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     window.logout = async () => {
-        try { await fetch('/api/auth/logout', { method: 'POST' }); } catch(e) {}
+        try { await fetch('/api/auth/logout', { method: 'POST' }).catch(() => {}); } catch(e) {}
         localStorage.removeItem('easyride_user');
         window.location.reload();
     };
@@ -83,32 +83,21 @@ document.addEventListener('DOMContentLoaded', () => {
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const msg = document.getElementById('login-message');
-        const payload = {
-            email: document.getElementById('login-email').value,
-            password: document.getElementById('login-password').value
-        };
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
 
-        try {
-            const res = await fetch('/api/auth/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-            const data = await res.json();
-            if (res.ok) {
-                currentUser = data.user;
-                localStorage.setItem('easyride_user', JSON.stringify(currentUser));
-                updateNav();
-                closeAuthModal();
-                loginForm.reset();
-                msg.textContent = '';
-                msg.className = 'form-msg';
-            } else {
-                msg.textContent = data.error;
-                msg.className = 'form-msg error';
-            }
-        } catch (err) {
-            msg.textContent = 'Network error.';
+        // Demo mode: accept any non-empty email/password
+        if (email && password) {
+            const username = email.split('@')[0];
+            currentUser = { id: 1, username: username, email: email };
+            localStorage.setItem('easyride_user', JSON.stringify(currentUser));
+            updateNav();
+            closeAuthModal();
+            loginForm.reset();
+            msg.textContent = '';
+            msg.className = 'form-msg';
+        } else {
+            msg.textContent = 'Please enter your email and password.';
             msg.className = 'form-msg error';
         }
     });
@@ -116,30 +105,17 @@ document.addEventListener('DOMContentLoaded', () => {
     registerForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const msg = document.getElementById('register-message');
-        const payload = {
-            username: document.getElementById('register-username').value,
-            email: document.getElementById('register-email').value,
-            password: document.getElementById('register-password').value
-        };
+        const username = document.getElementById('register-username').value;
+        const email = document.getElementById('register-email').value;
 
-        try {
-            const res = await fetch('/api/auth/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-            const data = await res.json();
-            if (res.ok) {
-                msg.textContent = 'Registration successful! Please login.';
-                msg.className = 'form-msg success';
-                registerForm.reset();
-                setTimeout(() => switchAuthTab('login'), 2000);
-            } else {
-                msg.textContent = data.error;
-                msg.className = 'form-msg error';
-            }
-        } catch (err) {
-            msg.textContent = 'Network error.';
+        // Demo mode: simulate successful registration
+        if (username && email) {
+            msg.textContent = 'Registration successful! Please login.';
+            msg.className = 'form-msg success';
+            registerForm.reset();
+            setTimeout(() => switchAuthTab('login'), 2000);
+        } else {
+            msg.textContent = 'Please fill in all fields.';
             msg.className = 'form-msg error';
         }
     });
@@ -184,14 +160,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Cars Logic ---
     async function fetchCars() {
         if(!carList) return;
-        try {
-            const res = await fetch('/api/cars');
-            const data = await res.json();
-            renderCars(data.cars);
-        } catch (error) {
-            console.error('Error fetching cars:', error);
-            carList.innerHTML = '<p style="color: red;">Failed to load vehicles.</p>';
-        }
+        // Demo mode: use static mock data (no backend required)
+        renderCars(DEMO_CARS);
     }
 
     function renderCars(cars) {
@@ -247,7 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
             openAuthModal();
             return;
         }
-        window.location.href = `/booking?id=${carId}`;
+        window.location.href = `booking.html?id=${carId}`;
     };
 
     // --- FAQ Logic ---

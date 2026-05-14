@@ -9,10 +9,10 @@
 </head>
 <body>
     <nav class="navbar">
-        <a href="/" class="logo">EasyRide<span>.</span></a>
+        <a href="index.html" class="logo">EasyRide<span>.</span></a>
         <ul class="nav-links">
-            <li><a href="/#fleet" data-i18n="nav_fleet">Our Fleet</a></li>
-            <li><a href="/my-bookings" data-i18n="nav_bookings">My Bookings</a></li>
+            <li><a href="index.html#fleet" data-i18n="nav_fleet">Our Fleet</a></li>
+            <li><a href="my-bookings.html" data-i18n="nav_bookings">My Bookings</a></li>
             <li id="nav-lang-menu" class="nav-auth-user" onclick="toggleLangDropdown(event)">
                 <svg viewBox="0 0 24 24" style="width: 24px; height: 24px; stroke: var(--text-color); fill: none; stroke-width: 2; cursor: pointer;"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
                 <div class="user-dropdown" id="lang-dropdown">
@@ -30,11 +30,11 @@
                 <span class="user-greeting">Hi, <span id="user-name-display"></span></span>
                 <span class="user-avatar" id="user-avatar"></span>
                 <div class="user-dropdown" id="user-dropdown">
-                    <a href="/profile" class="dropdown-item">
+                    <a href="profile.html" class="dropdown-item">
                         <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                         <span data-i18n="nav_profile">Personal Profile</span>
                     </a>
-                    <a href="/my-bookings" class="dropdown-item">
+                    <a href="my-bookings.html" class="dropdown-item">
                         <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                         <span data-i18n="nav_bookings">My Bookings</span>
                     </a>
@@ -42,7 +42,7 @@
                         <svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
                         <span data-i18n="nav_payment">Payment Methods</span>
                     </a>
-                    <a href="/profile#security" class="dropdown-item">
+                    <a href="profile.html#security" class="dropdown-item">
                         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
                         <span data-i18n="nav_settings">Account Settings</span>
                     </a>
@@ -185,11 +185,13 @@
 
     <footer>
         <div class="footer-bottom" style="margin-top: 0; padding-top: 2rem; padding-bottom: 2rem; border-top: 1px solid rgba(255,255,255,0.1); text-align: center; color: rgba(255,255,255,0.7);">
-            &copy; 2026 EasyRide Rentals. Built with Node.js, Express & SQLite.
+            &copy; 2026 EasyRide Rentals. Premium Car Rental Platform.
         </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@21.2.7/build/js/intlTelInput.min.js"></script>
+    <script src="mock-data.js"></script>
+    <script src="lang.js"></script>
     <script src="profile.js"></script>
 </body>
 </html>

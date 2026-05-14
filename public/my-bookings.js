@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Auth Check: Redirect to home if not logged in
     if (!currentUser) {
-        window.location.href = '/'; 
+        window.location.href = 'index.html'; 
         return;
     }
 
@@ -16,9 +16,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (userNameDisplay) userNameDisplay.textContent = currentUser.username;
 
     window.logout = async () => {
-        try { await fetch('/api/auth/logout', { method: 'POST' }); } catch(e) {}
+        try { await fetch('/api/auth/logout', { method: 'POST' }).catch(() => {}); } catch(e) {}
         localStorage.removeItem('easyride_user');
-        window.location.href = '/';
+        window.location.href = 'index.html';
     };
 
     window.toggleDropdown = (e) => {
@@ -43,18 +43,8 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     async function fetchHistory() {
-        try {
-            const res = await fetch(`/api/user/bookings?user_id=${currentUser.id}`);
-            const data = await res.json();
-            if (res.ok) {
-                renderHistory(data.bookings);
-            } else {
-                historyList.innerHTML = `<p style="color: red;">Error fetching history.</p>`;
-            }
-        } catch (err) {
-            console.error(err);
-            historyList.innerHTML = `<p style="color: red;">Network error.</p>`;
-        }
+        // Demo mode: use static mock bookings
+        renderHistory(DEMO_BOOKINGS);
     }
 
     function renderHistory(bookings) {
@@ -102,32 +92,18 @@ document.addEventListener('DOMContentLoaded', () => {
     window.cancelBooking = async (id, btnEl) => {
         if (!confirm('Are you sure you want to cancel this booking?')) return;
 
-        try {
-            const res = await fetch(`/api/cancel-booking`, { 
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ bookingId: id })
-            });
-            if (res.ok) {
-                // Remove the button and change status
-                const detailsDiv = btnEl.closest('.history-details');
-                if (detailsDiv) {
-                    const statusSpan = detailsDiv.querySelector('span[style*="background"]');
-                    if (statusSpan) {
-                        statusSpan.style.background = 'rgba(239, 68, 68, 0.1)';
-                        statusSpan.style.color = '#EF4444';
-                        statusSpan.innerHTML = '<svg viewBox="0 0 24 24" style="width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Cancelled';
-                    }
-                    btnEl.remove();
-                }
-                
-                showToast('Action successful!');
-            } else {
-                alert('Failed to cancel booking.');
+        // Demo mode: just update the UI locally
+        const detailsDiv = btnEl.closest('.history-details');
+        if (detailsDiv) {
+            const statusSpan = detailsDiv.querySelector('span[style*="background"]');
+            if (statusSpan) {
+                statusSpan.style.background = 'rgba(239, 68, 68, 0.1)';
+                statusSpan.style.color = '#EF4444';
+                statusSpan.innerHTML = '<svg viewBox="0 0 24 24" style="width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Cancelled';
             }
-        } catch(e) {
-            alert('Network error.');
+            btnEl.remove();
         }
+        showToast('Booking cancelled!');
     };
 
     function showToast(message) {

@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Auth Check
     if (!currentUser) {
-        window.location.href = '/'; 
+        window.location.href = 'index.html'; 
         return;
     }
 
@@ -13,9 +13,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (userNameDisplay) userNameDisplay.textContent = currentUser.username;
 
     window.logout = async () => {
-        try { await fetch('/api/auth/logout', { method: 'POST' }); } catch(e) {}
+        try { await fetch('/api/auth/logout', { method: 'POST' }).catch(() => {}); } catch(e) {}
         localStorage.removeItem('easyride_user');
-        window.location.href = '/';
+        window.location.href = 'index.html';
     };
 
     window.toggleDropdown = (e) => {
@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const carId = urlParams.get('id');
 
     if (!carId) {
-        window.location.href = '/';
+        window.location.href = 'index.html';
         return;
     }
 
@@ -86,18 +86,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const returnInput = document.getElementById('return_date');
     const totalPriceEl = document.getElementById('total-price');
 
-    // Fetch Car
+    // Fetch Car — Demo mode: find car from static DEMO_CARS list
     async function fetchCar() {
-        try {
-            const res = await fetch(`/api/cars/${carId}`);
-            if (res.ok) {
-                selectedCar = await res.json();
-                renderCarPreview();
-            } else {
-                carPreviewContent.innerHTML = '<p style="color:red;">Error loading car.</p>';
-            }
-        } catch (err) {
-            console.error(err);
+        selectedCar = DEMO_CARS.find(c => c.id === parseInt(carId)) || null;
+        if (selectedCar) {
+            renderCarPreview();
+        } else {
+            carPreviewContent.innerHTML = '<p style="color:red;">Car not found.</p>';
         }
     }
 
@@ -238,37 +233,21 @@ document.addEventListener('DOMContentLoaded', () => {
             payment_method: paymentMethodSelect.value
         };
 
-        // Simulate network delay for effect
+        // Simulate network delay, then show success (demo mode)
         setTimeout(async () => {
-            try {
-                const res = await fetch('/api/bookings', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                const data = await res.json();
-                if (res.ok) {
-                    const checkmark = document.getElementById('checkmark-overlay');
-                    if(checkmark) checkmark.classList.add('active');
-                    
-                    setTimeout(() => {
-                        bookingForm.classList.add('hidden');
-                        const bookingIdStr = 'ER-' + data.booking.id.toString().padStart(4, '0');
-                        const idEl = document.getElementById('success-booking-id');
-                        if (idEl) idEl.textContent = 'Booking Reference: #' + bookingIdStr;
-                        
-                        document.getElementById('success-state').classList.remove('hidden');
-                        showToast(`Confirmation receipt sent to ${currentUser.email}`);
-                        if(checkmark) checkmark.classList.remove('active');
-                    }, 1200);
-                } else {
-                    showToast(data.error || 'Booking failed.', 'error');
-                    resetBtn();
-                }
-            } catch (err) {
-                showToast('Network error.', 'error');
-                resetBtn();
-            }
+            const checkmark = document.getElementById('checkmark-overlay');
+            if(checkmark) checkmark.classList.add('active');
+            
+            setTimeout(() => {
+                bookingForm.classList.add('hidden');
+                const bookingIdStr = 'ER-' + String(Math.floor(Math.random() * 9000) + 1000).padStart(4, '0');
+                const idEl = document.getElementById('success-booking-id');
+                if (idEl) idEl.textContent = 'Booking Reference: #' + bookingIdStr;
+                
+                document.getElementById('success-state').classList.remove('hidden');
+                showToast(`Confirmation receipt sent to ${currentUser.email}`);
+                if(checkmark) checkmark.classList.remove('active');
+            }, 1200);
         }, 2000);
 
         function resetBtn() {
