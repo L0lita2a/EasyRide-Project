@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EasyRide | Secure Booking</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@21.2.7/build/css/intlTelInput.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="logo">EasyRide<span>.</span></a>
+        <ul class="nav-links">
+            <li><a href="index.html#fleet" data-i18n="nav_fleet">Our Fleet</a></li>
+            <li><a href="my-bookings.html" data-i18n="nav_bookings">My Bookings</a></li>
+            <li id="nav-lang-menu" class="nav-auth-user" onclick="toggleLangDropdown(event)">
+                <svg viewBox="0 0 24 24" style="width: 24px; height: 24px; stroke: var(--text-color); fill: none; stroke-width: 2; cursor: pointer;"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                <div class="user-dropdown" id="lang-dropdown">
+                    <a href="#" class="dropdown-item" onclick="setLanguage('en')">
+                        <img src="https://flagcdn.com/w40/gb.png" alt="English" class="dropdown-flag" />
+                        English (UK)
+                    </a>
+                    <a href="#" class="dropdown-item" onclick="setLanguage('tr')">
+                        <img src="https://flagcdn.com/w40/tr.png" alt="Turkish" class="dropdown-flag" />
+                        Türkçe (TR)
+                    </a>
+                </div>
+            </li>
+            <li id="nav-logout" class="nav-auth-user" onclick="toggleDropdown(event)">
+                <span class="user-greeting">Hi, <span id="user-name-display"></span></span>
+                <span class="user-avatar" id="user-avatar"></span>
+                <div class="user-dropdown" id="user-dropdown">
+                    <a href="profile.html" class="dropdown-item">
+                        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        <span data-i18n="nav_profile">Personal Profile</span>
+                    </a>
+                    <a href="my-bookings.html" class="dropdown-item">
+                        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                        <span data-i18n="nav_bookings">My Bookings</span>
+                    </a>
+                    <a href="profile.html#payment" class="dropdown-item">
+                        <svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+                        <span data-i18n="nav_payment">Payment Methods</span>
+                    </a>
+                    <a href="profile.html#security" class="dropdown-item">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                        <span data-i18n="nav_settings">Account Settings</span>
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" class="dropdown-item" onclick="logout()" style="color: var(--primary-color);">
+                        <svg viewBox="0 0 24 24" style="stroke: var(--primary-color);"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                        <span data-i18n="nav_logout">Logout</span>
+                    </a>
+                </div>
+            </li>
+        </ul>
+    </nav>
+
+    <main class="container booking-page-container page-fade-in">
+        <!-- Left Side: Car Details -->
+        <div class="booking-car-preview" id="booking-car-preview">
+            <div class="checkmark-overlay" id="checkmark-overlay">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" style="fill: none; stroke-width: 2;">
+                    <circle cx="26" cy="26" r="25" />
+                    <path d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+                </svg>
+                <h3 style="margin-top: 1rem; color: var(--text-color);">Confirmed!</h3>
+            </div>
+            <a href="index.html#fleet" style="display: inline-block; margin-bottom: 1.5rem; color: var(--text-muted); text-decoration: none; font-weight: 500; font-size: 0.95rem;">&larr; Back to Fleet</a>
+            <h2 class="section-title" style="text-align: left; margin-bottom: 1.5rem; font-size: 2rem;">Review & Confirm</h2>
+            <div id="car-preview-content">
+                <p>Loading vehicle details...</p>
+            </div>
+            <div id="live-summary" style="margin-top: 1rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color); display: none;">
+                <h4 style="margin-bottom: 1rem;">Live Summary</h4>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; color: var(--text-muted); font-size: 0.95rem;">
+                    <span>Payment Method</span>
+                    <span id="summary-payment">None</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; font-size: 1.1rem; color: var(--text-color);">
+                    <span>Estimated Total</span>
+                    <span id="total-price" style="font-weight: 700; font-size: 1.3rem;">$0.00</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side: Form / Success -->
+        <div class="booking-form-container">
+            <div id="success-state" class="hidden success-container">
+                <svg class="success-checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                    <circle cx="26" cy="26" r="25" fill="none"/>
+                    <path fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+                </svg>
+                <h2>Booking Confirmed!</h2>
+                <p id="success-booking-id" style="font-weight: 700; font-family: 'Playfair Display', serif; font-size: 1.25rem; color: var(--primary-color); margin-top: 0.5rem; margin-bottom: 0.5rem;"></p>
+                <p style="color: var(--text-muted); margin-bottom: 2rem;">Your ride is secured. A confirmation email has been sent to your registered address.</p>
+                <a href="my-bookings.html" class="btn btn-primary btn-block">View My Bookings</a>
+            </div>
+
+            <form id="booking-form">
+                <h3 style="margin-bottom: 2rem; font-size: 1.5rem;">Booking Details</h3>
+                
+                <input type="hidden" id="car_id" name="car_id">
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="pickup_date">Pickup Date</label>
+                        <input type="date" id="pickup_date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="return_date">Return Date</label>
+                        <input type="date" id="return_date" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Country</label>
+                        <input type="text" value="Turkey" readonly style="background-color: var(--section-bg); cursor: not-allowed; color: var(--text-muted);">
+                    </div>
+                    <div class="form-group">
+                        <label for="province">Province</label>
+                        <select id="province" required>
+                            <option value="">Select Province</option>
+                            <option value="Istanbul">Istanbul</option>
+                            <option value="Ankara">Ankara</option>
+                            <option value="Izmir">Izmir</option>
+                            <option value="Antalya">Antalya</option>
+                            <option value="Bursa">Bursa</option>
+                            <option value="Mugla">Mugla</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="phone_number">Phone Number</label>
+                        <input type="tel" id="phone_number" placeholder="+90 555 123 4567" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="landmark">Nearest Landmark / Pickup Point</label>
+                        <input type="text" id="landmark" placeholder="e.g., Next to Taksim Square..." required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="payment_method">Payment Method</label>
+                    <select id="payment_method" required>
+                        <option value="">Select Payment Method</option>
+                        <option value="Pay at Pickup">Pay at Pickup</option>
+                        <option value="Credit Card">Credit Card</option>
+                        <option value="Digital Wallet">Digital Wallet</option>
+                    </select>
+                </div>
+
+                <div id="credit-card-info" class="hidden fade-in" style="margin-top: 1.5rem; margin-bottom: 1.5rem;">
+                    <div class="form-group">
+                        <label for="card_number">Card Number</label>
+                        <input type="text" id="card_number" placeholder="0000 0000 0000 0000">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="expiry">Expiry Date</label>
+                            <input type="text" id="expiry" placeholder="MM/YY">
+                        </div>
+                        <div class="form-group">
+                            <label for="cvv">CVV</label>
+                            <input type="text" id="cvv" placeholder="123">
+                        </div>
+                    </div>
+                </div>
+
+                <div id="pay-at-pickup-msg" class="hidden fade-in" style="margin-top: 1.5rem; margin-bottom: 1.5rem; padding: 1rem; background: var(--section-bg); border-radius: 8px; border: 1px solid var(--border-color); color: var(--text-muted); text-align: center;">
+                    You will pay upon receiving the car.
+                </div>
+
+
+
+                <button type="submit" id="confirm-btn" class="btn btn-block btn-primary" disabled><span class="spinner hidden" id="btn-spinner"></span><span id="btn-text">Confirm Booking</span></button>
+                <div id="form-message" class="hidden" style="margin-top: 1rem; text-align: center; color: red;"></div>
+            </form>
+        </div>
+    </main>
+
+    <!-- Contact Modal -->
+    <div id="contact-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeContactModal()">&times;</span>
+            <h2 style="font-family: 'Playfair Display', serif; margin-bottom: 1rem;">Contact Us</h2>
+            <p style="color: var(--text-muted); margin-bottom: 2rem;">We're here to help. Send us a message and we'll get back to you shortly.</p>
+            <form onsubmit="event.preventDefault(); alert('Message sent successfully!'); closeContactModal();">
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" required>
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" required>
+                </div>
+                <div class="form-group">
+                    <label>Message</label>
+                    <textarea required></textarea>
+                </div>
+                <button type="submit" class="btn btn-block btn-primary">Send Message</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Stats Section -->
+    <section class="container bg-alt" style="padding: 4rem 2rem;">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <h3>750K+</h3>
+                <p>Trips Completed</p>
+            </div>
+            <div class="stat-item">
+                <h3>1.2M+</h3>
+                <p>Miles Driven</p>
+            </div>
+            <div class="stat-item">
+                <h3>95%</h3>
+                <p>Positive Reviews</p>
+            </div>
+            <div class="stat-item">
+                <h3>24/7</h3>
+                <p>Support</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Professional Corporate Footer -->
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <a href="index.html" class="footer-logo">EasyRide<span>.</span></a>
+                <p>Premium car rentals for the modern traveler. Experience the thrill of the open road with minimal hassle.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="index.html#how-it-works">About Us</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Press</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="index.html#faq">FAQ</a></li>
+                    <li><a href="#" onclick="openContactModal(); return false;">Contact</a></li>
+                    <li><a href="#">Help Center</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="terms.html">Terms of Service</a></li>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                    <li><a href="cookies.html">Cookies Policy</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2026 EasyRide Rentals. Premium Car Rental Platform.
+        </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@21.2.7/build/js/intlTelInput.min.js"></script>
+    <script src="mock-data.js"></script>
+    <script src="lang.js"></script>
+    <script src="booking.js"></script>
+</body>
+</html>

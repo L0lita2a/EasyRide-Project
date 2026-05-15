@@ -1,0 +1,17 @@
+EasyRide Fixed Version
+
+What was fixed:
+1. Removed dependency on demo-only logic for login, register, cars, booking, bookings history, profile update, and password update.
+2. Frontend now calls backend APIs and only falls back to demo data if the API is unavailable.
+3. Fixed database schema and safe migrations for old database.sqlite files.
+4. Fixed booking date validation and total price calculation.
+5. Added missing /api/auth/logout endpoint.
+6. Fixed language dropdown class bug.
+7. Removed node_modules from this package. Run npm install after extracting.
+
+How to run:
+npm install
+npm start
+
+Then open:
+http://localhost:3000
