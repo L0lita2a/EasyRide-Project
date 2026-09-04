@@ -1,8 +1,22 @@
-document.addEventListener('DOMContentLoaded', () => {
-    let currentUser = JSON.parse(localStorage.getItem('easyride_user'));
-    
-    if (!currentUser) {
-        window.location.href = 'index.html'; 
+document.addEventListener('DOMContentLoaded', async () => {
+    const api = (url, options = {}) => fetch(url, {
+        credentials: 'same-origin',
+        ...options,
+        headers: {
+            ...(options.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }),
+            ...(options.headers || {})
+        }
+    }).then(async response => {
+        const body = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(body.error || 'Request failed');
+        return body;
+    });
+
+    let currentUser;
+    try {
+        currentUser = (await api('/api/auth/me')).user;
+    } catch (_) {
+        window.location.href = 'index.html';
         return;
     }
 
@@ -12,175 +26,148 @@ document.addEventListener('DOMContentLoaded', () => {
     const profileNameDisplay = document.getElementById('profile-name-display');
     const profileAvatarInput = document.getElementById('profile-avatar-input');
     const phoneInput = document.getElementById('profile-phone');
+    const profileForm = document.getElementById('profile-form');
+    const passwordForm = document.getElementById('password-form');
 
-    // Initialize Intl Tel Input
-    let iti;
-    if (phoneInput) {
-        iti = window.intlTelInput(phoneInput, {
-            utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@21.2.7/build/js/utils.js",
-            initialCountry: "auto",
-            countrySearch: true,
-            geoIpLookup: function(callback) {
-                fetch("https://ipapi.co/json").then(function(res) { return res.json(); }).then(function(data) { callback(data.country_code); }).catch(function() { callback("us"); });
-            },
-        });
-    }
-
-    // Sync country search placeholder based on language
-    window.addEventListener('languageChanged', (e) => {
-        const lang = e.detail;
-        const searchInput = document.querySelector('.iti__search-input');
-        if (searchInput && translations[lang] && translations[lang].search_country) {
-            searchInput.placeholder = translations[lang].search_country;
+    const displayName = () => currentUser.full_name || currentUser.username || 'User';
+    function renderUser() {
+        const name = displayName();
+        if (userAvatar) userAvatar.textContent = name.charAt(0).toUpperCase();
+        if (userNameDisplay) userNameDisplay.textContent = name;
+        if (profileNameDisplay) profileNameDisplay.textContent = name;
+        if (profileAvatarLarge && !profileAvatarLarge.style.backgroundImage) {
+            profileAvatarLarge.textContent = name.charAt(0).toUpperCase();
         }
-    });
-
-    // Also try checking the placeholder periodically in case the dropdown gets re-rendered
-    setInterval(() => {
-        const lang = localStorage.getItem('easyride_lang') || 'en';
-        const searchInput = document.querySelector('.iti__search-input');
-        if (searchInput && translations[lang] && translations[lang].search_country && searchInput.placeholder !== translations[lang].search_country) {
-            searchInput.placeholder = translations[lang].search_country;
-        }
-    }, 500);
-
-    if (userAvatar) userAvatar.textContent = currentUser.username.charAt(0).toUpperCase();
-    if (userNameDisplay) userNameDisplay.textContent = currentUser.username;
-
-    // Instant Image Preview
-    if (profileAvatarInput) {
-        profileAvatarInput.addEventListener('change', (e) => {
-            if (e.target.files && e.target.files[0]) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    profileAvatarLarge.textContent = '';
-                    profileAvatarLarge.style.backgroundImage = `url(${e.target.result})`;
-                };
-                reader.readAsDataURL(e.target.files[0]);
-            }
-        });
     }
-    
+    renderUser();
+
     window.logout = async () => {
-        try { await fetch('/api/auth/logout', { method: 'POST' }).catch(() => {}); } catch(e) {}
-        localStorage.removeItem('easyride_user');
+        try { await api('/api/auth/logout', { method: 'POST' }); } catch (_) {}
         window.location.href = 'index.html';
     };
-
-    window.toggleDropdown = (e) => {
-        e.stopPropagation();
-        document.getElementById('user-dropdown').classList.toggle('active');
+    window.toggleDropdown = event => {
+        event.stopPropagation();
+        document.getElementById('user-dropdown')?.classList.toggle('active');
     };
-
-    document.addEventListener('click', (e) => {
+    document.addEventListener('click', event => {
         const dropdown = document.getElementById('user-dropdown');
-        if (dropdown && dropdown.classList.contains('active') && !e.target.closest('.nav-auth-user')) {
+        if (dropdown?.classList.contains('active') && !event.target.closest('.nav-auth-user')) {
             dropdown.classList.remove('active');
         }
     });
-
-    window.togglePasswordVisibility = (id) => {
+    window.togglePasswordVisibility = id => {
         const input = document.getElementById(id);
-        if (input.type === "password") {
-            input.type = "text";
-        } else {
-            input.type = "password";
-        }
+        if (input) input.type = input.type === 'password' ? 'text' : 'password';
     };
-
-    window.openCardModal = () => {
-        const modal = document.getElementById('card-modal');
+    window.openContactModal = () => {
+        const modal = document.getElementById('contact-modal');
         if (modal) modal.style.display = 'block';
     };
-
-    window.closeCardModal = () => {
-        const modal = document.getElementById('card-modal');
+    window.closeContactModal = () => {
+        const modal = document.getElementById('contact-modal');
         if (modal) modal.style.display = 'none';
     };
-
+    window.openCardModal = () => document.getElementById('card-modal')?.style.setProperty('display', 'block');
+    window.closeCardModal = () => document.getElementById('card-modal')?.style.setProperty('display', 'none');
     window.submitCard = () => {
-        closeCardModal();
-        showToast('Card added successfully!');
-        document.getElementById('add-card-form').reset();
+        window.closeCardModal();
+        document.getElementById('add-card-form')?.reset();
+        showToast('Card storage is not available yet.', 'error');
     };
 
-    // Load User Data — Demo mode: use localStorage user info
-    async function fetchUserData() {
-        const u = currentUser;
-        document.getElementById('profile-fullname').value = u.full_name || u.username || '';
-        document.getElementById('profile-email').value = u.email || '';
-        document.getElementById('profile-phone').value = u.phone_number || '';
-        document.getElementById('profile-address').value = u.address || '';
-        profileNameDisplay.textContent = u.full_name || u.username;
-        profileAvatarLarge.textContent = ((u.full_name || u.username || 'U').charAt(0)).toUpperCase();
+    if (phoneInput && window.intlTelInput) {
+        window.intlTelInput(phoneInput, {
+            utilsScript: 'https://cdn.jsdelivr.net/npm/intl-tel-input@21.2.7/build/js/utils.js',
+            initialCountry: 'auto',
+            countrySearch: true
+        });
     }
-    fetchUserData();
 
-    // Handle Profile Update — Demo mode: save to localStorage, show toast
-    const profileForm = document.getElementById('profile-form');
-    profileForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const btn = document.getElementById('profile-save-btn');
-        const text = document.getElementById('profile-btn-text');
-        const spinner = document.getElementById('profile-spinner');
-        const msg = document.getElementById('profile-message');
-        
-        btn.disabled = true;
-        text.textContent = 'Saving...';
-        spinner.classList.remove('hidden');
-        msg.classList.add('hidden');
+    function fillProfile() {
+        document.getElementById('profile-fullname').value = currentUser.full_name || '';
+        document.getElementById('profile-email').value = currentUser.email || '';
+        phoneInput.value = currentUser.phone_number || '';
+        document.getElementById('profile-address').value = currentUser.address || '';
+        renderUser();
+        if (currentUser.profile_picture && profileAvatarLarge) {
+            profileAvatarLarge.textContent = '';
+            profileAvatarLarge.style.backgroundImage = `url("${currentUser.profile_picture}")`;
+        }
+    }
+    fillProfile();
 
-        // Simulate save delay
-        setTimeout(() => {
-            const updatedName = document.getElementById('profile-fullname').value;
-            const updatedEmail = document.getElementById('profile-email').value;
-            
-            // Update localStorage
-            currentUser.full_name = updatedName;
-            currentUser.email = updatedEmail;
-            localStorage.setItem('easyride_user', JSON.stringify(currentUser));
-            
-            profileNameDisplay.textContent = updatedName || currentUser.username;
-            showToast('Changes saved!', 'success');
-            
-            btn.disabled = false;
-            text.textContent = 'Update Profile';
-            spinner.classList.add('hidden');
-        }, 1000);
+    profileAvatarInput?.addEventListener('change', event => {
+        const file = event.target.files?.[0];
+        if (!file || !profileAvatarLarge) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+            profileAvatarLarge.textContent = '';
+            profileAvatarLarge.style.backgroundImage = `url("${reader.result}")`;
+        };
+        reader.readAsDataURL(file);
     });
 
-    // Handle Password Update — Demo mode: just validate and show toast
-    const passwordForm = document.getElementById('password-form');
-    passwordForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const btn = document.getElementById('password-save-btn');
+    profileForm?.addEventListener('submit', async event => {
+        event.preventDefault();
+        const button = document.getElementById('profile-save-btn');
+        const text = document.getElementById('profile-btn-text');
+        const spinner = document.getElementById('profile-spinner');
+        button.disabled = true;
+        text.textContent = 'Saving...';
+        spinner.classList.remove('hidden');
+        try {
+            const data = new FormData();
+            data.append('full_name', document.getElementById('profile-fullname').value.trim());
+            data.append('phone_number', phoneInput.value.trim());
+            data.append('address', document.getElementById('profile-address').value.trim());
+            if (profileAvatarInput.files?.[0]) data.append('avatar', profileAvatarInput.files[0]);
+            await api('/api/update-profile', { method: 'POST', body: data });
+            currentUser = (await api('/api/auth/me')).user;
+            fillProfile();
+            showToast('Changes saved!');
+        } catch (error) {
+            showToast(error.message, 'error');
+        } finally {
+            button.disabled = false;
+            text.textContent = 'Update Profile';
+            spinner.classList.add('hidden');
+        }
+    });
+
+    passwordForm?.addEventListener('submit', async event => {
+        event.preventDefault();
+        const message = document.getElementById('password-message');
+        const button = document.getElementById('password-save-btn');
         const text = document.getElementById('password-btn-text');
         const spinner = document.getElementById('password-spinner');
-        const msg = document.getElementById('password-message');
-        
         const newPassword = document.getElementById('new-password').value;
-        const confirmPassword = document.getElementById('confirm-password').value;
-
-        if (newPassword !== confirmPassword) {
-            msg.textContent = 'New passwords do not match.';
-            msg.style.color = 'red';
-            msg.classList.remove('hidden');
+        if (newPassword !== document.getElementById('confirm-password').value) {
+            message.textContent = 'New passwords do not match.';
+            message.classList.remove('hidden');
             return;
         }
-
-        btn.disabled = true;
+        button.disabled = true;
         text.textContent = 'Updating...';
         spinner.classList.remove('hidden');
-        msg.classList.add('hidden');
-
-        // Demo mode: simulate success
-        setTimeout(() => {
-            showToast('Password changed successfully!', 'success');
+        message.classList.add('hidden');
+        try {
+            await api('/api/user/me/password', {
+                method: 'PUT',
+                body: JSON.stringify({
+                    current_password: document.getElementById('current-password').value,
+                    new_password: newPassword
+                })
+            });
             passwordForm.reset();
-            btn.disabled = false;
+            showToast('Password changed successfully!');
+        } catch (error) {
+            message.textContent = error.message;
+            message.classList.remove('hidden');
+        } finally {
+            button.disabled = false;
             text.textContent = 'Update Password';
             spinner.classList.add('hidden');
-        }, 1000);
+        }
     });
 
     function showToast(message, type = 'success') {
@@ -188,15 +175,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!container) return;
         const toast = document.createElement('div');
         toast.className = 'toast';
-        const color = type === 'error' ? '#EF4444' : '#10B981';
-        const icon = type === 'error' ? 
-            `<svg viewBox="0 0 24 24" style="width: 24px; height: 24px; stroke: ${color}; fill: none; stroke-width: 2; flex-shrink: 0;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>` : 
-            `<svg viewBox="0 0 24 24" style="width: 24px; height: 24px; stroke: ${color}; fill: none; stroke-width: 2; flex-shrink: 0;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`;
-        toast.innerHTML = `
-            ${icon}
-            <span style="color: ${color}; font-weight: 500;">${message}</span>
-        `;
-        toast.style.borderLeft = `4px solid ${color}`;
+        toast.textContent = message;
+        toast.style.borderLeft = `4px solid ${type === 'error' ? '#EF4444' : '#10B981'}`;
         container.appendChild(toast);
         setTimeout(() => toast.remove(), 4500);
     }

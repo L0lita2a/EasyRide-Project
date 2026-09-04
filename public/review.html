@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>EasyRide | Feedback Review</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <main class="container review-page">
+        <a class="logo" href="index.html">EasyRide<span>.</span></a>
+        <h1 class="section-title review-title">Feedback review</h1>
+        <p class="section-intro">Private workspace for the EasyRide team to read, prioritize, and respond to user and developer feedback.</p>
+        <form id="review-access" class="review-access"><label>Reviewer key <input id="review-key" type="password" required autocomplete="current-password"></label><button class="btn btn-primary">Open responses</button><p id="review-message" class="form-msg" role="alert"></p></form>
+        <section id="review-list" class="review-list" aria-live="polite"></section>
+    </main>
+    <script src="theme.js"></script>
+    <script src="review.js"></script>
+</body>
+</html>

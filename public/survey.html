@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>EasyRide | User Survey</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <main class="google-survey-page">
+        <div class="google-survey-header">
+            <a class="survey-brand" href="index.html">EasyRide<span>.</span></a>
+            <h1>EasyRide User Experience Survey</h1>
+            <p>We are improving EasyRide and would love to hear from you. This survey has 10 questions and takes about 3 minutes.</p>
+            <p class="required-note"><span>*</span> Indicates a required question</p>
+        </div>
+        <div class="google-survey-body">
+            <form id="long-survey-form" class="survey-form">
+                <input type="hidden" name="device" id="survey-device">
+                <div class="question-card"><label><span class="question-title">1. Which best describes you? <em>*</em></span><select name="q1" required><option value="">Choose one</option><option>Customer</option><option>Developer</option><option>Business partner</option></select></label></div>
+                <div class="question-card"><label><span class="question-title">2. How easy was it to find a car? <em>*</em></span><div class="choice-list"><label><input type="radio" name="q2" value="Very easy" required> Very easy</label><label><input type="radio" name="q2" value="Easy"> Easy</label><label><input type="radio" name="q2" value="Neutral"> Neutral</label><label><input type="radio" name="q2" value="Difficult"> Difficult</label><label><input type="radio" name="q2" value="Very difficult"> Very difficult</label></div></label></div>
+                <div class="question-card"><label><span class="question-title">3. How clear were the rental prices? <em>*</em></span><div class="choice-list"><label><input type="radio" name="q3" value="Very clear" required> Very clear</label><label><input type="radio" name="q3" value="Clear"> Clear</label><label><input type="radio" name="q3" value="Neutral"> Neutral</label><label><input type="radio" name="q3" value="Unclear"> Unclear</label></div></label></div>
+                <div class="question-card"><label><span class="question-title">4. Which fleet filter would you use most? <em>*</em></span><select name="q4" required><option value="">Choose one</option><option>Price</option><option>Category</option><option>Fuel</option><option>Transmission</option><option>Seats</option></select></label></div>
+                <div class="question-card"><label><span class="question-title">5. Which media would help you choose a car? <em>*</em></span><div class="choice-list"><label><input type="radio" name="q5" value="Real driving video" required> Real driving video</label><label><input type="radio" name="q5" value="More photos"> More photos</label><label><input type="radio" name="q5" value="360-degree view"> 360-degree view</label><label><input type="radio" name="q5" value="Owner reviews"> Customer reviews</label></div></label></div>
+                <div class="question-card"><label><span class="question-title">6. Which improvement matters most? <em>*</em></span><div class="choice-list"><label><input type="radio" name="q6" value="Dark mode" required> Dark mode</label><label><input type="radio" name="q6" value="Mobile design"> Mobile design</label><label><input type="radio" name="q6" value="Payments"> Payments</label><label><input type="radio" name="q6" value="Support"> Customer support</label></div></label></div>
+                <div class="question-card"><label><span class="question-title">7. How would you rate the mobile experience? <em>*</em></span><select name="q7" required><option value="">Choose one</option><option>Excellent</option><option>Good</option><option>Okay</option><option>Poor</option></select></label></div>
+                <div class="question-card"><label><span class="question-title">8. What device do you normally use? <em>*</em></span><select name="q8" required><option value="">Choose one</option><option>Phone</option><option>Tablet</option><option>Laptop</option><option>Desktop</option></select></label></div>
+                <div class="question-card"><label><span class="question-title">9. How likely are you to recommend EasyRide? <em>*</em></span><div class="choice-list"><label><input type="radio" name="q9" value="Very likely" required> Very likely</label><label><input type="radio" name="q9" value="Likely"> Likely</label><label><input type="radio" name="q9" value="Not sure"> Not sure</label><label><input type="radio" name="q9" value="Unlikely"> Unlikely</label></div></label></div>
+                <div class="question-card"><label><span class="question-title">10. What is the one thing we should improve first? <em>*</em></span><textarea name="q10" rows="5" maxlength="1000" required placeholder="Your answer"></textarea></label></div>
+                <div class="question-card optional-card"><label>Your name (optional) <input name="name" maxlength="100" autocomplete="name"></label><label>Your email (optional) <input name="email" type="email" maxlength="160" autocomplete="email"></label></div>
+                <div class="question-card"><label class="survey-consent"><input name="consent" type="checkbox" value="true" required> I agree that EasyRide may use this feedback to improve the service. <em>*</em></label></div>
+                <button class="google-submit" type="submit">Submit</button>
+                <p id="long-survey-message" class="form-msg" role="status" aria-live="polite"></p>
+            </form>
+        </div>
+    </main>
+    <script src="theme.js"></script>
+    <script src="survey.js"></script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>EasyRide | Our Fleet</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="logo">EasyRide<span>.</span></a>
+        <ul class="nav-links">
+            <li><a href="fleet.html" aria-current="page">Our Fleet</a></li>
+            <li><a href="index.html#company">About EasyRide</a></li>
+            <li><a href="index.html#survey">Share feedback</a></li>
+            <li id="nav-login"><a href="index.html#auth-modal">Login / Register</a></li>
+        </ul>
+    </nav>
+    <main class="container fleet-page page-fade-in">
+        <span class="eyebrow">THE EASYRIDE COLLECTION</span>
+        <h1 class="section-title fleet-title">Find your perfect ride</h1>
+        <p class="section-intro fleet-intro">Filter by the details that matter to you, then compare every vehicle before you book.</p>
+        <form class="fleet-filters" id="fleet-filters" aria-label="Filter vehicles">
+            <label>Search <input id="fleet-search" type="search" placeholder="Search by model"></label>
+            <label>Category <select id="fleet-category"><option value="">All categories</option></select></label>
+            <label>Fuel <select id="fleet-fuel"><option value="">All fuel types</option></select></label>
+            <label>Transmission <select id="fleet-transmission"><option value="">All transmissions</option></select></label>
+            <label>Maximum daily price <input id="fleet-price" type="range" min="0" max="150" value="150" step="5"><output id="fleet-price-output">$150/day</output></label>
+            <button class="btn btn-secondary" type="reset">Clear filters</button>
+        </form>
+        <p id="fleet-count" class="fleet-count" role="status"></p>
+        <div id="fleet-list" class="car-grid"></div>
+    </main>
+    <script src="theme.js"></script>
+    <script src="fleet.js"></script>
+</body>
+</html>

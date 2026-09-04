@@ -11,7 +11,9 @@
     <nav class="navbar">
         <a href="index.html" class="logo">EasyRide<span>.</span></a>
         <ul class="nav-links">
-            <li><a href="index.html#fleet">Our Fleet</a></li>
+            <li><a href="fleet.html">Our Fleet</a></li>
+            <li><a href="#company">About EasyRide</a></li>
+            <li><a href="survey.html">Share feedback</a></li>
             <li id="nav-lang-menu" class="nav-auth-user" onclick="toggleLangDropdown(event)">
                 <svg viewBox="0 0 24 24" style="width: 24px; height: 24px; stroke: var(--text-color); fill: none; stroke-width: 2; cursor: pointer;"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
                 <div class="user-dropdown" id="lang-dropdown">
@@ -60,11 +62,16 @@
     <!-- Hero Section -->
     <header class="hero">
         <div class="hero-content">
+            <div class="hero-eyebrow"><span></span> Premium mobility, made simple</div>
             <h1 data-i18n="hero_title">Drive away in just minutes.</h1>
             <p data-i18n="hero_subtitle">Experience the thrill of the open road with our premium selection of vehicles. Minimal hassle, maximum pleasure.</p>
             <div class="hero-actions">
                 <a href="#fleet" class="btn btn-primary" data-i18n="btn_browse">Browse cars</a>
                 <a href="#how-it-works" class="btn btn-secondary" data-i18n="btn_how_it_works">How it works</a>
+            </div>
+            <div class="hero-proof">
+                <div class="proof-avatars"><span>SM</span><span>DK</span><span>PR</span></div>
+                <div><strong>Loved by modern travelers</strong><small>Simple booking. Remarkable rides.</small></div>
             </div>
         </div>
     </header>
@@ -94,11 +101,45 @@
 
     <!-- Main Content Area -->
     <main id="fleet" class="container">
-        <h2 class="section-title">Select Your Vehicle</h2>
+        <div class="section-heading">
+            <div><span class="eyebrow">THE EASYRIDE COLLECTION</span><h2 class="section-title">Select Your Vehicle</h2></div>
+            <p class="section-intro">From city-ready compacts to unforgettable weekend drives, find the right car for your next chapter.</p>
+        </div>
+        <p class="fleet-link-row"><a class="btn btn-secondary" href="fleet.html">Explore and filter the full fleet</a></p>
         <div id="car-list" class="car-grid">
             <!-- Cars will be injected here via JavaScript -->
         </div>
     </main>
+
+    <section id="company" class="container company-section">
+        <div class="company-content">
+            <span class="eyebrow">ABOUT EASYRIDE</span>
+            <h2 class="section-title">A better way to move</h2>
+            <p>EasyRide is a customer-first rental company built for clear prices, carefully maintained vehicles, and pickup experiences that respect your time. Our local team supports every trip from booking to return.</p>
+            <div class="company-values"><div><strong>Transparent</strong><span>No surprise daily rates.</span></div><div><strong>Carefully selected</strong><span>Vehicles ready for the road.</span></div><div><strong>Human support</strong><span>Real help whenever you need it.</span></div></div>
+        </div>
+    </section>
+
+    <section id="survey" class="container survey-section">
+        <div class="survey-card">
+            <span class="eyebrow">HELP US IMPROVE</span>
+            <h2 class="section-title">Tell us what would make EasyRide better</h2>
+            <p class="section-intro">Help us prioritize the next improvements with our ten-question user survey.</p>
+            <p><a class="btn btn-primary" href="survey.html">Open the 10-question survey</a></p>
+            <form id="survey-form" class="survey-form">
+                <input type="hidden" id="survey-device" name="device">
+                <fieldset><legend>Who are you?</legend><label><input type="radio" name="respondent_type" value="customer" required> Customer</label><label><input type="radio" name="respondent_type" value="developer"> Developer</label><label><input type="radio" name="respondent_type" value="business"> Business partner</label></fieldset>
+                <label>Your name (optional) <input name="name" maxlength="100" autocomplete="name"></label>
+                <label>Your email (optional) <input name="email" type="email" maxlength="160" autocomplete="email"></label>
+                <fieldset><legend>How was your experience?</legend><label><input type="radio" name="experience" value="excellent" required> Excellent</label><label><input type="radio" name="experience" value="good"> Good</label><label><input type="radio" name="experience" value="okay"> Okay</label><label><input type="radio" name="experience" value="poor"> Needs improvement</label></fieldset>
+                <label>Which feature matters most? <select name="favorite_feature" required><option value="">Choose one</option><option value="fleet">Fleet and filters</option><option value="booking">Booking experience</option><option value="pricing">Clear pricing</option><option value="support">Company support</option><option value="design">Design and dark mode</option></select></label>
+                <label>What should we improve next? <textarea name="improvements" rows="4" maxlength="1000" required placeholder="Tell us what you need..."></textarea></label>
+                <label class="survey-consent"><input name="consent" type="checkbox" value="true" required> I agree that EasyRide may use this feedback to improve the service.</label>
+                <button class="btn btn-primary" type="submit">Submit feedback</button>
+                <p id="survey-message" class="form-msg" role="status" aria-live="polite"></p>
+            </form>
+        </div>
+    </section>
 
     <!-- Real Stories -->
     <section class="container bg-alt">
@@ -303,8 +344,10 @@
         </div>
     </footer>
 
+    <script src="theme.js"></script>
     <script src="mock-data.js"></script>
     <script src="script.js"></script>
     <script src="lang.js"></script>
+    <script src="survey.js"></script>
 </body>
 </html>

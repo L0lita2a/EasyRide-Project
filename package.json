@@ -5,16 +5,23 @@
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node --test test/*.test.js",
+    "test:e2e": "set RUN_E2E=1&& node --test test/browser.smoke.test.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
+  "devDependencies": {
+    "playwright": "^1.57.0"
+  },
   "dependencies": {
     "bcryptjs": "^3.0.3",
     "express": "^5.2.1",
     "multer": "^2.1.1",
     "sqlite3": "^6.0.1"
+  },
+  "devDependencies": {
+    "playwright": "^1.62.1"
   }
 }
