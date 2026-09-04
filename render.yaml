@@ -7,6 +7,10 @@ services:
     envVars:
       - key: DB_PATH
         value: /data/database.sqlite
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: REVIEW_KEY
+        generateValue: true
     disk:
       name: data
       mountPath: /data
