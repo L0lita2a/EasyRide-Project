@@ -3,7 +3,7 @@ services:
     name: easyride
     env: node
     plan: free
-    buildCommand: npm install
+    buildCommand: npm install --build-from-source
     startCommand: npm start
     envVars:
       - key: DB_PATH
